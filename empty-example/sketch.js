@@ -1,64 +1,37 @@
-var bubble = [];
-var numBubbles = 10;
+var video;  // global video DOM element
+var widthCanvas = 800;
+var heightCanvas = 600;
+var snapshotXOffset = 0;
+var snapshotYOffset = 0;
+var widthSnapshot = 80;
+var heightSnapshot = 60;
 
 function setup()
 {
-    createCanvas(500, 500);
-    for(var i=0; i<numBubbles; i++)
-    {
-        bubble[i] = new Bubble();
-    }
+    createCanvas(widthCanvas, heightCanvas);
+    background(200);
+    video = createCapture(VIDEO, 300, 300);
 }
 
 function draw()
 {
-    background(0);
-    for(var i=0; i<numBubbles; i++)
-    {
-        bubble[i].display();
-        bubble[i].move();
-        for(var j=0; j<numBubbles; j++)
+    image(video.get(), snapshotXOffset, snapshotYOffset, widthSnapshot, heightSnapshot);
+//    for(var i=0; i<100; i++)
+//    {
+        snapshotXOffset += widthSnapshot;
+        if(snapshotXOffset >= widthCanvas)
         {
-            if(i != j)
+            snapshotXOffset = 0;
+            if(snapshotYOffset < heightCanvas)
             {
-                if(bubble[i].collide(bubble[j]))
-                {
-                    bubble[i].changeColor();
-                    bubble[j].changeColor();
-                }
+                snapshotYOffset += heightSnapshot;
+            }
+            else
+            {
+                snapshotYOffset = 0;
             }
         }
-    }
-    
-}
-
-function Bubble()
-{
-    this.x = random(0, width);
-    this.y = random(0, height);
-    this.radius = 25;
-    this.col = color(255);
-    
-    this.display = function() {
-        fill(this.col);
-        ellipse(this.x, this.y, this.radius * 2, this.radius * 2);
-    }
-    
-    this.move = function() {
-        this.x = this.x + random(-5, 5);
-        this.y = this.y + random(-5, 5);
-    }
-    
-    this.changeColor = function() {
-        this.col = color(random(255), random(255), random(255));
-    }
-    
-    this.collide = function(otherObj) {
-        var dis = dist(this.x, this.y, otherObj.x, otherObj.y);
-        if(dis <= (this.radius + otherObj.radius))
-            return true;
-        else
-            return false;
-    }
+//    }
+    console.log(frameCount);
     
 }
